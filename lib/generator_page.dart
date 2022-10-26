@@ -1,38 +1,36 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:number_generator/generator_change_notifier.dart';
+import 'package:provider/provider.dart';
 
-class GeneratorPage extends HookWidget {
+class GeneratorPage extends StatelessWidget {
   GeneratorPage({
     super.key,
-    required this.min,
-    required this.max,
   });
-
-  final int min, max;
-  final randomGenerated = Random();
 
   @override
   Widget build(BuildContext context) {
-    final generatedNumber = useState<int?>(null);
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Generator"),
       ),
       body: Center(
-        child: Text(
-          generatedNumber.value?.toString() ?? 'Generate a number',
-          style: TextStyle(
-            fontSize: 42.0,
-          ),
+        child: Consumer<GeneratorChangeNotifer>(
+          builder: (context, notifier, child) {
+            return Text(
+              notifier.generatedNumber?.toString() ?? 'Generate a number',
+              style: TextStyle(
+                fontSize: 42.0,
+              ),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         label: Text('Generate'),
         onPressed: () {
-          generatedNumber.value = min + randomGenerated.nextInt(max + 1 - min);
+          context.read<GeneratorChangeNotifer>().generateRandomNumber();
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
